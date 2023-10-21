@@ -4,7 +4,7 @@ You have to rotate the image in-place, which means you have to modify the input 
 // Approach - Simple
 //   for 90 degree - take transpose and reverse row
 //   for 180 degreee - take reverse of row first and then reverse of col
-//   for 270/-90 degree - transpose + revers of cols
+//   for 270 - transpose + revers of cols
 
 
 class Solution {
