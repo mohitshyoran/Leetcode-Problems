@@ -18,3 +18,20 @@ public:
         return maxSum;
     }
 };
+
+// Another way of writing same code
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int sum = 0, maxSum = INT_MIN;
+        for(auto num : nums){
+            sum = max(sum+num , num);
+            maxSum = max(maxSum, sum);
+        }
+        return maxSum;
+    }
+};
+
+
+
