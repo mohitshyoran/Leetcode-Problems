@@ -1,0 +1,31 @@
+https://leetcode.com/problems/sort-colors/description/
+Java
+
+Given an array containing balls of Red, Blue and Green Color in a random order. 
+Your goal is to arrange these balls in sorted order - Red Balls, followed by Blue and then Green Balls. Red balls are denoted using number 0, Blue using 1 and Green using 2.
+
+Code
+
+class Solution {
+    void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    public void sortColors(int[] nums) {
+        int n = nums.length;
+        int i = 0, j = n-1;
+        int k = 0;
+        while(k <= j){
+            if(nums[k] == 0){
+                swap(nums, i, k);
+                i++;k++;
+            } else if(nums[k] == 2){
+                swap(nums, k, j);
+                j--;
+            }else{
+                k++;
+            }
+        }
+    }
+}
