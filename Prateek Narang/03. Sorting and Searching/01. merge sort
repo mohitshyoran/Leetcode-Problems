@@ -1,0 +1,45 @@
+https://leetcode.com/problems/sort-an-array/description/
+java
+
+class Solution {
+    void merge(int[] num, int l, int m, int r){
+        int n = r-l+1;
+        int temp[] = new int[n];
+        int i = l, j = m+1, k = 0;
+        while(i <= m && j <= r){
+            if(num[i] <= num[j]){
+                temp[k] = num[i];
+                i++;
+            } else {
+                temp[k] = num[j];
+                j++;
+            }
+            k++;
+        }
+        while(i <= m){
+            temp[k] = num[i];
+            k++;i++;
+        }
+        while(j <= r){
+            temp[k] = num[j];
+            k++;j++;
+        }
+        for(i = 0; i < n; i++){
+            num[i+l] = temp[i];
+        }
+    }
+
+    void mergeSort(int[] num, int l, int r){
+        if(l >= r)   return;
+
+        int m = l + (r-l)/2;
+        mergeSort(num, l, m);
+        mergeSort(num, m+1, r);
+
+        merge(num, l, m, r);   
+    }
+    public int[] sortArray(int[] nums) {
+        mergeSort(nums, 0, nums.length-1);
+        return nums;
+    }
+}
