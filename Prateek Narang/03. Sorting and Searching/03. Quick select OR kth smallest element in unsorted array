@@ -1,0 +1,33 @@
+https://www.geeksforgeeks.org/kth-smallest-largest-element-in-unsorted-array/
+
+arr[] = 7 10 4 3 20 15
+K = 3
+Output: 7
+
+
+class Solution{
+    static void swap(int[] arr, int i, int j){
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+    static int partition(int[] arr, int l, int r){
+        int i = l-1;
+        int pivot = arr[r];
+        for(int j = l; j < r; j++){
+            if(arr[j] < pivot){
+                i++;
+                swap(arr, i, j);
+            }
+        }
+        swap(arr, i+1, r);
+        return i+1;
+    }
+    public static int kthSmallest(int[] arr, int l, int r, int k) 
+    { 
+        int p = partition(arr, l, r);
+        if(p == k-1)    return arr[p];
+        else if(k-1 < p)    return kthSmallest(arr, l, p-1, k);
+        else return kthSmallest(arr, p+1, r, k);
+    } 
+}
