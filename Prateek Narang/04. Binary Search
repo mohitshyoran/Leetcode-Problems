@@ -1,0 +1,43 @@
+https://www.geeksforgeeks.org/problems/aggressive-cows/0
+Java
+
+You are given an array consisting of n integers which denote the position of a stall. You are also given an integer k which denotes the number of aggressive cows. You are given the task of assigning stalls to k cows such that the minimum distance between any two of them is the maximum possible.
+The first line of input contains two space-separated integers n and k.
+The second line contains n space-separated integers denoting the position of the stalls.
+
+
+class Solution {
+    private static boolean isPossible(int[] stalls, int dist, int k){
+        int count = 1;
+        int i = 1, n = stalls.length;
+        int last = stalls[0];
+        while(i < n){
+            if(last + dist <= stalls[i]){
+                count++;
+                last = stalls[i];
+            }
+            i++;
+        }
+        return count >= k;
+    }
+    public static int solve(int n, int k, int[] stalls) {
+         int l = 1;
+         int r = Integer.MIN_VALUE;
+         for(int num : stalls){
+             r = Integer.max(r, num);
+         }
+         Arrays.sort(stalls);
+         int ans = Integer.MIN_VALUE;
+         
+         while(l <= r){
+             int m = (l+r)/2;
+             if(isPossible(stalls, m, k)){
+                 ans = Integer.max(ans, m);
+                 l = m+1;
+             } else {
+                 r = m-1;
+             }
+         }
+         return ans;
+    }
+}
