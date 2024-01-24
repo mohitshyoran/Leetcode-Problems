@@ -1,0 +1,24 @@
+https://www.geeksforgeeks.org/problems/kth-element-in-matrix/1?utm_source=geeksforgeeks&utm_medium=article_practice_tab&utm_campaign=article_practice_tab
+
+//Do binary search on min element and max element
+int kthSmallest(int mat[MAX][MAX], int n, int k)
+{
+    int low = mat[0][0];
+    int high = mat[n-1][n-1];
+    
+    while(low < high){
+        int count = 0;
+        int mid = (low+high)/2;
+        for(int i = 0; i < n; i++){
+            count += upper_bound(mat[i], mat[i]+n, mid) - mat[i];
+        }
+        
+        if(k > count){
+            low = mid+1;
+        }
+        else{
+            high = mid;
+        }
+    }
+    return low;
+}
