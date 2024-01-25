@@ -4,17 +4,26 @@ Each element nums[i] represents the maximum length of a forward jump from index 
 i + j < n
 Return the minimum number of jumps to reach nums[n - 1]. The test cases are generated such that you can reach nums[n - 1].
 
+```cpp
 class Solution {
 public:
     int jump(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> dp(n, INT_MAX);
-        dp[0] = 0;
-        for(int i = 0; i < n; i++){
-            for(int j = i+1; j <= i+nums[i] && j < n; j++){
-                dp[j] = min(dp[j], dp[i]+1);
-            }
+        for(int i = 1; i < nums.size(); i++){
+            //farthest possible index that can be reached from index till i.
+            nums[i] = max(nums[i] + i, nums[i-1]);
         }
-        return dp[n-1];
+
+        int ind = 0;
+        int ans = 0;
+
+        //go to max possible index and again do the same.
+        while(ind < nums.size() - 1){
+            ans++;
+            ind = nums[ind];
+        }
+
+        return ans;
     }
 };
+```
+
