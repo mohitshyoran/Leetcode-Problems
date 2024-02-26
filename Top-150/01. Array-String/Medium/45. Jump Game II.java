@@ -8,20 +8,15 @@ Return the minimum number of jumps to reach nums[n - 1]. The test cases are gene
 class Solution {
 public:
     int jump(vector<int>& nums) {
-        for(int i = 1; i < nums.size(); i++){
+        int farthest = 0, jump = 0, ind = 0;
+        for(int i = 0; i < nums.size()-1; i++){
             //farthest possible index that can be reached from index till i.
-            nums[i] = max(nums[i] + i, nums[i-1]);
+            farthest = max(farthest, i+nums[i]);
+            if(ind == i){
+                jump++;
+                ind = farthest;
+            }  
         }
-
-        int ind = 0;
-        int ans = 0;
-
-        //go to max possible index and again do the same.
-        while(ind < nums.size() - 1){
-            ans++;
-            ind = nums[ind];
-        }
-
-        return ans;
+        return jump;
     }
 };
