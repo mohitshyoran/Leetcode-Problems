@@ -1,0 +1,21 @@
+https://leetcode.com/problems/find-bottom-left-tree-value/description/
+
+Given the root of a binary tree, return the leftmost value in the last row of the tree.
+
+class Solution {
+    int maxD = Integer.MIN_VALUE, value;
+    public void helper(TreeNode root, int depth){
+        if(root == null)    return;
+        if(depth > maxD){
+            maxD = depth;
+            value = root.val;
+        }
+
+        helper(root.left, depth+1);
+        helper(root.right, depth+1);
+    }
+    public int findBottomLeftValue(TreeNode root) {
+        helper(root, 0);
+        return value;
+    }
+}
