@@ -1,0 +1,57 @@
+https://leetcode.com/problems/implement-trie-prefix-tree/?envType=study-plan-v2&envId=top-interview-150
+
+A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
+Implement the Trie class:
+Trie() Initializes the trie object.
+void insert(String word) Inserts the string word into the trie.
+boolean search(String word) Returns true if the string word is in the trie (i.e., was inserted before), and false otherwise.
+boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+
+
+class TrieNode{
+public:
+    string word;
+    TrieNode *child[26];
+    TrieNode(){
+        word = "";
+        for(int i = 0; i < 26; i++) child[i] = NULL;
+    }
+};
+
+class Trie {
+public:
+    TrieNode* root;
+    Trie() {
+        root = new TrieNode();
+    }
+    
+    void insert(string word) {
+        TrieNode* p = root;
+        for(auto ch : word){
+            int i = ch-'a';
+            if(!p->child[i]) p->child[i] = new TrieNode();
+            p = p->child[i];
+        }
+        p->word = word;
+    }
+    
+    bool search(string word) {
+        TrieNode* p = root;
+        for(auto ch : word){
+            int i = ch - 'a';
+            if(!p->child[i])    return false;
+            p = p->child[i];
+        }
+        return p->word == word;
+    }
+    
+    bool startsWith(string prefix) {
+        TrieNode* p = root;
+        for(auto ch : prefix){
+            int i = ch - 'a';
+            if(!p->child[i])    return false;
+            p = p->child[i];
+        }
+        return true;
+    }
+};
