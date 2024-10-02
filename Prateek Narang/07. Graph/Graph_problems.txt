@@ -1,0 +1,641 @@
+Graphs
+*********************
+
+Graph Applications
+
+1. Shortest Path
+2. Social networks (mutual friens, connections)
+3. shortest cyclic route(cover all the points with min cost)
+4. Resolving dependencies(order package installation)
+5. Routing algorithms (optimal path to flow data packets)
+6. Deep Learning
+-
+-lot more
+
+
+*******************
+Graph Representation - Adjancey List, Matrix
+Type - weighted, unweighted
+     - directed, undirected
+********************
+
+1. Adjancy List implelmentation
+
+#include <iostream>
+#include<list>
+
+using namespace std;
+class Graph{
+    int V;
+    list<int> *l;
+public:
+    Graph(int v){
+        V = v;
+        l = new list<int>[v];
+    }
+    void addEdge(int i, int j, bool undir=true){
+        l[i].push_back(j);
+        if(undir)   l[j].push_back(i);
+    }
+    void printGraph(){
+        for(int i = 0; i < V; i++){
+            cout<<i<<"-->";
+            for(auto v: l[i]){
+                cout<<v<<" ";
+            }
+            cout<<endl;
+        }
+    }
+};
+
+int main()
+{
+    Graph G(3);
+    G.addEdge(0,1);
+    G.addEdge(1,2);
+    G.printGraph();
+    return 0;
+}
+
+-----------------------------------
+
+2. Adjancey List Representation with Node class
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node{
+public:
+    string name;
+    list<string> nbrs;
+    Node(string n){
+        name = n;
+    }
+};
+
+class Graph{
+    unordered_map<string, Node*> m;
+public:
+    Graph(vector<string> cities){
+        for(auto city: cities){
+            m[city] = new Node(city);
+        }
+    }
+    void addEdge(string a, string b, bool undir=true){
+        m[a]->nbrs.push_back(b);
+        if(undir)   m[b]->nbrs.push_back(a);
+    }
+    void printGraph(){
+        for(auto v : m){
+            string city = v.first;
+            Node *node = v.second;
+            cout<<city<<"-->";
+            for(auto nbr : node->nbrs){
+                cout<<nbr<<" ";
+            }
+            cout<<endl;
+        }
+    }
+};
+
+int main(){
+    vector<string> cities = {"Delhi", "Jaipur", "Pune"};
+    Graph G(cities);
+    G.addEdge("Jaipur", "Delhi");
+    G.addEdge("Delhi", "Pune");
+    G.printGraph();
+    return 0;
+}
+
+---------------------------------------------
+
+3. Weighted Graphs
+
+The following example shows how to store weighted graphs (as an adjacency list)
+
+#include<iostream>
+#include<list>
+#include<set>
+using namespace std;
+class Graph{
+	int V;
+	list<pair<int,int> > *l;
+ 
+public:
+	Graph(int v){
+		V = v;
+		l = new list<pair<int,int> >[V];
+	}
+ 
+	void addEdge(int u,int v,int wt,bool undir = true){
+ 
+		l[u].push_back({wt,v});
+		if(undir){
+			l[v].push_back({wt,u});
+		}
+	}
+ 
+};
+ 
+int main(){
+ 
+	Graph g(5);
+	g.addEdge(0,1,1);
+	g.addEdge(1,2,2);
+	g.addEdge(0,2,4);
+	g.addEdge(0,3,7);
+	g.addEdge(3,2,2);
+	g.addEdge(3,4,3);
+}
+
+----------------------------------------
+
+4. BFS with adjency list
+
+    void bfs(int source){
+        queue<int> q;
+        bool visited[V] = {false};
+        q.push(source);
+        visited[source] = true;
+        while(!q.empty()){
+            int f = q.front();
+            q.pop();
+            cout<<f<<" ";
+            for(auto nbr : l[f]){
+                if(visited[nbr] == false)   q.push(nbr);
+                visited[nbr] = true;
+            }
+        }
+    }
+
+--------------------------------------
+
+5. Single source shortest path for undirected graph(SSSP)
+
+    void bfs(int source, int dest = -1){
+        queue<int> q;
+        bool visited[V] = {false};
+        int parent[V] = {-1};
+        int dist[V] = {0};
+        
+        dist[source] = 0;
+        q.push(source);
+        visited[source] = true;
+        while(!q.empty()){
+            int f = q.front();
+            q.pop();
+            for(auto nbr : l[f]){
+                if(visited[nbr] == false){
+                    q.push(nbr);
+                    visited[nbr] = true;
+                    dist[nbr] = dist[f]+1;
+                    parent[nbr] = f;
+                }
+            }
+        }
+        for(int i = 0; i < V; i++){
+            cout<<"shortest distance to "<<i<<" is "<<dist[i]<<endl;
+        }
+        if(dest != -1){
+            while(dest != source){
+                cout<<dest<<"-->";
+                dest = parent[dest];
+            }
+            cout<<source<<endl;
+        }
+    }
+
+-------------------------------------------
+
+6. DFS using Adjancey list
+#include <bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int V;
+    list<int> *l;
+public:
+    Graph(int v){
+        V = v;
+        l = new list<int>[v];
+    }
+    void addEdge(int i, int j, bool undir=true){
+        l[i].push_back(j);
+        if(undir)   l[j].push_back(i);
+    }
+    void printGraph(){
+        for(int i = 0; i < V; i++){
+            cout<<i<<"-->";
+            for(auto v: l[i]){
+                cout<<v<<" ";
+            }
+            cout<<endl;
+        }
+    }
+    
+    void dfsHelper(int node, bool *visited){
+        cout<<node<<" ";
+        visited[node] = true;
+        
+        for(auto nbr : l[node]){
+            if(visited[nbr] == false){
+                dfsHelper(nbr, visited);
+            }
+        }
+    }
+    
+    void dfs(int source){
+        bool *visited = new bool[V]{false};
+        dfsHelper(source, visited);
+    }
+};
+
+int main()
+{
+	Graph g(7);
+	g.addEdge(0,1);
+	g.addEdge(1,2);
+	g.addEdge(2,3);
+	g.addEdge(3,5);
+	g.addEdge(5,6);
+	g.addEdge(4,5);
+	g.addEdge(0,4);
+	g.addEdge(3,4);
+	g.dfs(1);
+	return 0;
+}
+
+--------------------------------------
+
+7. Cycle in undorected graph
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int V;
+    list<int> *l;
+public:
+    Graph(int v){
+        V = v;
+        l = new list<int>[v];
+    }
+    void addEdge(int i, int j, bool undir=true){
+        l[i].push_back(j);
+        if(undir)   l[j].push_back(i);
+    }
+    void printGraph(){
+        for(int i = 0; i < V; i++){
+            cout<<i<<"-->";
+            for(auto v: l[i]){
+                cout<<v<<" ";
+            }
+            cout<<endl;
+        }
+    }
+    
+    bool cycleHelper(int node, int parent, bool *visited){
+        visited[node] = true;
+        
+        for(auto nbr: l[node]){
+            if(!visited[nbr]){
+                bool cycle = cycleHelper(nbr, node, visited);
+                if(cycle)   return true;
+            }
+            else if(parent != nbr)   return true;
+        }
+        return false;
+    }
+    
+    bool contains_cycle(){
+        bool *visited = new bool[V]{false};
+        return cycleHelper(0, -1, visited);
+    }
+};
+
+bool contains_cycle(int V,vector<pair<int,int> > edges){
+    Graph g(V);
+    for(auto e : edges){
+        g.addEdge(e.first, e.second);
+    }
+    return g.contains_cycle();
+}
+
+------------------------------------------
+
+8. check cycle in directed graph
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int V;
+    list<int> *l;
+public:
+    Graph(int v){
+        V = v;
+        l = new list<int>[v];
+    }
+    void addEdge(int i, int j, bool undir=true){
+        l[i].push_back(j);
+        if(undir)   l[j].push_back(i);
+    }
+    void printGraph(){
+        for(int i = 0; i < V; i++){
+            cout<<i<<"-->";
+            for(auto v: l[i]){
+                cout<<v<<" ";
+            }
+            cout<<endl;
+        }
+    }
+    
+    bool dfs(int node, vector<bool> &visited, vector<bool> &stack){
+        visited[node] = true;
+        stack[node] = true;
+        
+        for(auto nbr : l[node]){
+            if(stack[nbr] == true)  return true;
+            bool cycle_mila = dfs(nbr, visited, stack);
+            if(cycle_mila)  return true;
+        }
+        
+        stack[node] = false;
+        return false;
+    }
+    
+    bool contains_cycle(){
+        vector<bool> visited(V, false);
+        vector<bool> stack(V, false);
+        for(int i = 0; i < V; i++){
+            if(visited[i] == false && dfs(i, visited, stack))  return true;
+        }
+        return false;
+    }
+};
+
+int main()
+{
+	Graph g(3);
+	g.addEdge(0,1);
+	g.addEdge(1,2);
+	g.addEdge(2,0);
+	cout << g.contains_cycle() <<endl;
+	return 0;
+}
+
+------------------------------------------
+
+9. Dijkstra's algortighm
+Single source shortest path on weighted graphs.
+
+#include<bits/stdc++.h>
+using namespace std;
+class Graph{
+	int V;
+	list<pair<int,int> > *l;
+ 
+public:
+	Graph(int v){
+		V = v;
+		l = new list<pair<int,int> >[V];
+	}
+ 
+	void addEdge(int u,int v,int wt,bool undir = true){
+ 
+		l[u].push_back({wt,v});
+		if(undir){
+			l[v].push_back({wt,u});
+		}
+	}
+	
+	int dijkstra(int source, int dest){
+	    vector<int> dist(V, INT_MAX);
+	    set<pair<int,int>> s;
+	    
+	    dist[source] = 0;
+	    s.insert({0, source});
+	    
+	    while(!s.empty()){
+	        auto it = s.begin();
+	        s.erase(it);
+	        
+	        int node = it->second;
+	        int distTillNow = it->first;
+	        
+	        for(auto nbrpair: l[node]){
+	            int nbr = nbrpair.second;
+	            int wt = nbrpair.first;
+	            
+	            if(distTillNow + wt < dist[nbr]){
+	                auto it = s.find({dist[nbr], nbr});
+	                if(it != s.end()){
+	                    s.erase(it);
+	                }
+	                dist[nbr] = distTillNow + wt;
+	                s.insert({dist[nbr], nbr});
+	            }
+	        }
+	        
+	    }
+	   for(int i = 0; i < V; i++){
+	       cout<<"Shortest distance to "<<i<<" is "<<dist[i]<<endl;
+	   }
+	   
+	   return dist[dest];
+	}
+ 
+};
+ 
+int main(){
+ 
+	Graph g(5);
+	g.addEdge(0,1,1);
+	g.addEdge(1,2,1);
+	g.addEdge(0,2,4);
+	g.addEdge(0,3,7);
+	g.addEdge(3,2,2);
+	g.addEdge(3,4,3);
+
+	cout << g.dijkstra(0,4)<<endl;
+}
+
+--------------------------------------------
+
+10. Shortest grid path
+
+Given a two dimensional grid, each cell of which contains integer cost which represents a cost to traverse through that cell, we need to find a path from top left cell to bottom right cell by which total cost incurred is minimum.
+
+Note : It is assumed that negative cost cycles do not exist in input matrix.
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int ans;
+void shortestPath(vector<vector<int> > &grid, int i, int j, vector<vector<bool> > visited, int m, int n, int cost){
+    if(i < 0 || i == m || j < 0 || j == n)  return;
+    if(visited[i][j])   return;
+    if(i == m-1 && j == n-1){
+        cost += grid[i][j];
+        ans = min(ans, cost);
+        return;
+    }
+    visited[i][j] = true;
+    shortestPath(grid, i-1, j, visited, m, n, cost + grid[i][j]);
+    shortestPath(grid, i, j-1, visited, m, n, cost + grid[i][j]);
+    shortestPath(grid, i, j+1, visited, m, n, cost + grid[i][j]);
+    shortestPath(grid, i+1, j, visited, m, n, cost + grid[i][j]);
+}
+int shortest_path(vector<vector<int> > grid){
+    //return the shortest path len
+    int m = grid.size();
+    int n = grid[0].size();
+    ans = INT_MAX;
+    vector<vector<bool>> visited(m, vector<bool>(n, 0));
+    shortestPath(grid, 0, 0, visited, m, n, 0);
+    return ans;
+}
+
+----------------------------------------------
+
+11. Largest Island
+You are given a two dimensional grid, containing only 0 s and 1s. Each 1 represents land, and 0 represents water. The adjacent 1s form an island. Each land piece (x,y) is connected to its 4 neighbours (Left, Right, Up and Down).  Your task is to find the size of largest island - size of island is given by number of 1s in that island. Your code should return 0 is no island is present.
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int largestIsland(vector<vector<int> > &grid, int i, int j){
+    int m = grid.size();
+    int n = grid[0].size();
+    if(i < 0 || j < 0 || i == m || j == n)  return 0;
+    if(grid[i][j] == 0) return 0;
+    
+    int res = 0;
+    grid[i][j] = 0;
+    res = 1;
+    res += largestIsland(grid, i+1, j);
+    res += largestIsland(grid, i-1, j);
+    res += largestIsland(grid, i, j+1);
+    res += largestIsland(grid, i, j-1);
+    return res;
+}
+
+int largest_island(vector<vector<int> > grid){
+    //return the size of largest island in grid
+    int m = grid.size();
+    int n = grid[0].size();
+    int ans = 0;
+    for(int i = 0; i < m; i++){
+        for(int j = 0; j < n; j++){
+            if(grid[i][j] == 1)
+                ans = max(ans, largestIsland(grid, i, j));
+        }
+    }
+    return ans;
+}
+
+-----------------------------------------------------
+
+12. Astronaut Pairs
+The member states of the UN are planning to send people to the moon. They want them to be from different countries. You will be given a list of pairs of astronaut ID's. Each pair is made of astronauts from the same country. Determine how many pairs of astronauts from different countries they can choose from.
+
+#include<bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int v;
+    list<int> *l;
+public:
+    Graph(int v){
+        v = v;
+        l = new list<int>[v];
+    }
+    void addEdge(int a, int b){
+        l[a].push_back(b);
+        l[b].push_back(a);
+    }
+    void dfs(int i, vector<bool> &visited, int &num){
+        num++;
+        visited[i] = true;
+        for(auto nbr : l[i]){
+            if(!visited[nbr]){
+                dfs(nbr, visited, num);
+            }
+        }
+    }
+};
+
+int count_pairs(int N, vector<pair<int,int> > astronauts){
+    //complete this method
+    Graph g(N);
+    for(auto p: astronauts){
+        g.addEdge(p.first, p.second);
+    }
+    
+    vector<bool> visited(N, false);
+    vector<int> connected;
+    int num = 0;
+    for(int i = 0; i < N; i++){
+        num = 0;
+        if(!visited[i]){
+            g.dfs(i, visited, num);
+            connected.push_back(num);
+        }
+    }
+    
+    int ans = 0;
+    for(auto v: connected){
+        ans += v*(N-v);
+    }
+    return ans/2;
+    
+}
+
+------------------------------------------
+
+13. longest increasing sequence in 2d matrix
+
+class Solution {
+public:
+        int dfs(vector<vector<int> > &matrix, int m, int n, vector<vector<bool>> &visited, int i, int j, vector<vector<int>> &dp){
+        visited[i][j] = true;
+        int dx[4] = {0,0,1,-1};
+        int dy[4] = {1,-1,0,0};
+
+        int ans = 0;
+        for(int k = 0; k < 4; k++){
+            int nx = i + dx[k];
+            int ny = j + dy[k];
+            if(nx>=0 && ny>=0 && nx<m && ny<n && matrix[nx][ny] >matrix[i][j]){
+                if(visited[nx][ny]){
+                    ans = max(ans, dp[nx][ny]);
+                }
+                else{
+                   ans = max(ans,dfs(matrix,m,n,visited,nx,ny,dp));
+                }
+            }
+        }
+        return dp[i][j] = ans+1;
+    }
+
+    int longestIncreasingPath(vector<vector<int> > &matrix){
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+
+        int ans = 0;
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(!visited[i][j]){
+                    dp[i][j] = dfs(matrix, m, n, visited, i, j,dp);
+                    ans = max(ans, dp[i][j]);
+                }
+            }
+        }
+        return ans;
+    }
+
+};
+
+-----------------------------------------
